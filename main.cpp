@@ -1,6 +1,8 @@
 #include <iostream>
 #include <queue>
 #include<vector>
+#include<string>
+#include<fstream>
 using namespace std;
 
 class _code{
@@ -116,8 +118,33 @@ int main(){
     //vector to store characters along with their encoding
     vector<_code*> coding;
     huffmantree(coding,a,a.size()); 
-        for(auto i=coding.begin();i!=coding.end();i++){
-            cout<<(*i)->character<<" "<<(*i)->code<<endl;
+    /*
+    for(auto i=coding.begin();i!=coding.end();i++){
+        cout<<(*i)->character<<" "<<(*i)->code<<endl;
         }
+    */
+    cout<<"Please wait while we compress your file."<<endl;
+    auto i=coding.begin();
+    ofstream write;
+    write.open("output.txt");
+    while(i!=coding.end()){
+        write<<(*i)->character<<" "<<(*i)->code<<endl;
+        i++;
+    }
+    write<<'#'<<endl;
+    int j=0;
+    while(j<size){
+        auto i=coding.begin();
+        while(i!=coding.end()){
+            if(str[j]==(*i)->character){
+                write<<(*i)->code<<" ";
+                break;
+            }
+            i++;
+        }
+        j++;
+    }
+    write.close();
+    cout<<"File compression successful"<<endl;
     return 0;
 }
