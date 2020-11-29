@@ -8,7 +8,7 @@ class _singlechar{
     int freq;
     _singlechar(char data){
         this->data=data;
-        this->freq=0;
+        this->freq=1;
     }
     void increment(){
         this->freq++;
@@ -77,32 +77,33 @@ void huffmantree(char data[],int freq[],int size){
 
 }
 void ins(vector<_singlechar*> &a,char b){
-    auto i=(a.begin()+1);
-    cout<<(*i)->data;
-    while(i!=a.end()){
-        if((*i)->data>b){
-            break;
-        }
-        i++;
-    }
-    if((*(i-1))->data==b){
-        (*(i-1))->freq++;
+    if(a.empty()){
+        a.push_back(new _singlechar(b));
     }
     else{
-        a.insert(i,new _singlechar(b));
+        auto i=a.begin();
+        int flag=0;
+        while(i!=a.end()){
+            if((*i)->data>=b){
+                if((*i)->data==b){
+                    ((*i)->freq)++;
+                }
+                else{
+                    a.insert(i,new _singlechar(b));
+                }
+                flag=1;
+                break;
+            }
+            i++;
+        }
+        if(flag==0){
+            a.push_back(new _singlechar(b));
+        }
     }
-    /*
-    for(auto i=a.begin();i!=a.end();i++){
-       cout<<(*i)->data<<" : "<<(*i)->freq<<endl;
-    }
-    */
-   
-
 }
+
 int main(){
    vector<_singlechar*> a;
-   //vector<int> b;
-   //b.insert(b.begin(),1);
    string str;
    cin>>str;
    int size = str.size();
