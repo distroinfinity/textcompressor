@@ -2,6 +2,16 @@
 #include <queue>
 #include<vector>
 using namespace std;
+
+class _code{
+    public:
+    char character;
+    string code;
+    _code(char c,string s){
+        this->character=c;
+        this->code=s;
+    }
+};
 class _singlechar{
     public:
     char data;
@@ -34,34 +44,25 @@ struct compare{
     }
 };
 
-void printtree(_node* root,string code){
-    //cout<<code<<" t4"<<endl;
+void printtree(_node* root,string code,vector<_code*> &coding){
     if(root==NULL){
         return;
     }
-    //cout<<"t5"<<endl;
     if(root->data!='#'){
-        cout<<root->data<<" : "<< code <<endl;
+        //cout<<root->data<<" : "<< code <<endl;
+        coding.push_back(new _code(root->data,code));
     }
-    //cout<<"t6"<<endl;
-    printtree(root->left, code+'0');
-    printtree(root->right,code+'1');
+    printtree(root->left, code+'0',coding);
+    printtree(root->right,code+'1',coding);
 }
-
-void huffmantree(char data[],int freq[],int size){
-    //cout<<"t1"<<endl;
+void huffmantree(vector<_code*> &coding,vector<_singlechar*> &a,int size){
+    //class _node{ char data; int freq; _node* left; _node* right;}
     _node* left,*right,*top;
     priority_queue<_node*, vector<_node*>, compare> q ;
     for(int i=0;i<size;i++){
-        q.push(new _node(data[i],freq[i]));
+        q.push(new _node(a[i]->data,a[i]->freq));
     }
-    /*
-    for(int i=0;i<size;i++){
-        cout<<q.top()->data<<" "<<q.top()->freq;
-        q.pop();
-    }
-    */
-    //cout<<"t2"<<endl;
+   
     while(q.size()!=1){
         left=q.top();
         q.pop();
@@ -72,8 +73,7 @@ void huffmantree(char data[],int freq[],int size){
         top->right=right;
         q.push(top);
     }
-    //cout<<"t3 "<<q.top()->freq<<endl;
-    printtree(q.top(),"");
+     printtree(q.top(),"",coding);
 
 }
 void ins(vector<_singlechar*> &a,char b){
@@ -101,23 +101,23 @@ void ins(vector<_singlechar*> &a,char b){
         }
     }
 }
-
 int main(){
-   vector<_singlechar*> a;
-   string str;
-   cin>>str;
-   int size = str.size();
-   a.push_back(new _singlechar(str[0]));
-   for(int i=1;i<size;i++){
-       ins(a,str[i]);
-   }
-   for(auto i=a.begin();i!=a.end();i++){
-       cout<<(*i)->data<<" : "<<(*i)->freq<<endl;
-   }
-   /*
-   char arr[]={'a','b','c','d','e','f'};
-   int freq[]={5,9,12,13,16,45};
-   huffmantree(arr,freq,size); 
-*/
-   return 0;
+    //class _singlechar{ char data; int freq }
+    //vector to store unique characters along with their frequency 
+    vector<_singlechar*> a;
+    string str;
+    cin>>str;
+    int size = str.size();
+    a.push_back(new _singlechar(str[0]));
+    for(int i=1;i<size;i++){
+        ins(a,str[i]);
+    }
+    //class _code{ char character; string code }
+    //vector to store characters along with their encoding
+    vector<_code*> coding;
+    huffmantree(coding,a,a.size()); 
+        for(auto i=coding.begin();i!=coding.end();i++){
+            cout<<(*i)->character<<" "<<(*i)->code<<endl;
+        }
+    return 0;
 }
