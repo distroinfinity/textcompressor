@@ -103,19 +103,28 @@ void ins(vector<_singlechar*> &a,char b){
         }
     }
 }
-int main(){
-    //class _singlechar{ char data; int freq }
+void compress(){
+    //class _singlechar{public:char data;int freq;_singlechar(char data){this->data=data;this->freq=1;}void increment(){this->freq++;}}
     //vector to store unique characters along with their frequency 
     vector<_singlechar*> a;
-    string str;
-    cin>>str;
-    int size = str.size();
-    a.push_back(new _singlechar(str[0]));
-    for(int i=1;i<size;i++){
-        ins(a,str[i]);
+    //string str
+    //cin>>str;
+    //int size = str.size();
+    char c;
+
+    ifstream read;
+    read.open("input_string.txt");
+    if(read.fail()){
+        cout<<"couldn't open file"<<endl;
     }
-    //class _code{ char character; string code }
-    //vector to store characters along with their encoding
+    else{
+        while(read.get(c)){
+            ins(a,c);
+        }
+    }
+    read.close();
+    //class _code{public:char character;string code;_code(char c,string s){this->character=c;this->code=s;}};
+    //vector to store characters along with their coding
     vector<_code*> coding;
     huffmantree(coding,a,a.size()); 
     /*
@@ -123,7 +132,6 @@ int main(){
         cout<<(*i)->character<<" "<<(*i)->code<<endl;
         }
     */
-    cout<<"Please wait while we compress your file."<<endl;
     auto i=coding.begin();
     ofstream write;
     write.open("output.txt");
@@ -132,19 +140,93 @@ int main(){
         i++;
     }
     write<<'#'<<endl;
-    int j=0;
-    while(j<size){
+    //int j=0;
+    //ifstream read;
+    read.open("input_string.txt");
+    while(read.get(c)){
         auto i=coding.begin();
         while(i!=coding.end()){
-            if(str[j]==(*i)->character){
+            if(c==(*i)->character){
                 write<<(*i)->code<<" ";
                 break;
             }
             i++;
         }
-        j++;
     }
     write.close();
+    read.close();
     cout<<"File compression successful"<<endl;
+}
+char search(vector<_code*> &coding,string binary){
+    auto i=coding.begin();
+    while(i!=coding.end()){
+        if((*i)->code==binary){
+            break;
+        }
+        i++;
+    }
+    return (*i)->character;
+}
+void decode(){
+    //class _code{ char character; string code }
+    //vector to store characters along with their decoding
+    vector<_code*> decode;
+    char charac;
+    string str="",line;
+    int size;
+
+    ifstream read;
+    read.open("output.txt");
+    while(read){
+        getline(read,line);
+        //cout<<line<<endl;
+        if(line=="#"){
+            break;
+        }
+        str="";
+        charac=line[0];
+        size=line.size();
+        for(int i=2;i<size;i++){
+            str+=line[i];
+        }
+        decode.push_back(new _code(charac,str));   
+    }
+    string binary;
+
+    ofstream write;
+    write.open("decoded.txt");
+    while(read){
+        read>>binary;
+        //cout<<letter<<" ";
+        write<<search(decode,binary);
+    }
+    read.close();
+    write.close();
+    /*
+    for(auto i=decode.begin();i!=decode.end();i++){
+        cout<<(*i)->character<<" "<<(*i)->code<<endl;
+    }
+    */
+}
+
+int main(){
+    int choice=0;
+    while(choice!=-1){
+        cout<<"1 to compress"<<endl<<"2 to decode"<<endl<<"-1 to exit"<<endl;;
+        cin>>choice;
+        switch(choice){
+            case 1:
+            compress();
+            break;
+            case 2:
+            cout<<"test1"<<endl;
+            decode();
+            break;
+            case -1:
+            break;
+            default:
+            cout<<"Enter a choice"<<endl;
+        }
+    }
     return 0;
 }

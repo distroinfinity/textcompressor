@@ -19,11 +19,17 @@ int main(){
     write.close();
     */
    ifstream read;
-   read.open("writing.txt");
+   read.open("C:\\My stuff\\work\\DS Project\\output.txt");
    while(read){
        getline(read,line);
+       if(line=="#"){
+           break;
+       }
        cout<<line;
        cout<<endl;
+   }
+   while(read>>line){
+       cout<<line<<" ";
    }
    read.close();
    return 0;
