@@ -132,30 +132,62 @@ void compress(){
         cout<<(*i)->character<<" "<<(*i)->code<<endl;
         }
     */
-    auto i=coding.begin();
-    ofstream write;
-    write.open("output.txt");
+    //auto i=coding.begin();
+    
+    /*
     while(i!=coding.end()){
         write<<(*i)->character<<" "<<(*i)->code<<endl;
         i++;
     }
     write<<'#'<<endl;
+    */
     //int j=0;
     //ifstream read;
+    vector<bool> encoded_data;
     read.open("input_string.txt");
     while(read.get(c)){
         auto i=coding.begin();
         while(i!=coding.end()){
             if(c==(*i)->character){
-                write<<(*i)->code<<" ";
+                string temp = (*i)->code;
+                int size = temp.size();
+                int j=0;
+                while(j<size){
+                    if(temp[j]=='0'){
+                        encoded_data.push_back(0);
+                    }
+                    else{
+                        encoded_data.push_back(1);
+                    }
+                    j++;
+                }
                 break;
             }
             i++;
         }
     }
-    write.close();
+    cout<<encoded_data.size()<<endl;
     read.close();
-    cout<<"File compression successful"<<endl;
+    ofstream write;
+    write.open("output.bin",ios::binary|ios::out);
+    int Bit_Counter = 0;
+	uint8_t Packed_Byte = 0;
+    
+	for(int i = 0; i < encoded_data.size(); ++i){
+		if(encoded_data[i] == 1){
+			Packed_Byte |= 1;
+		}
+		if(i < encoded_data.size()-1){
+			Packed_Byte <<= 1;
+		}
+		++Bit_Counter;
+		if(Bit_Counter == 8){
+			write << Packed_Byte;
+			Bit_Counter = 0;
+		}
+	}
+    write << Packed_Byte;
+    write.close();
 }
 char search(vector<_code*> &coding,string binary){
     auto i=coding.begin();
