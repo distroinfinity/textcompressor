@@ -1,5 +1,0 @@
-my name is manu
-hello
-123
--123
-hello

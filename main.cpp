@@ -137,9 +137,10 @@ void compress(){
     
     char c;
     ifstream read;
-    read.open("input_string.txt");
+    read.open("input_text.txt");
     if(read.fail()){
-        cout<<"couldn't open file"<<endl;
+        cout<<"couldn't open source text file"<<endl;
+        exit(1);
     }
     else{
         while(read.get(c)){
@@ -199,8 +200,8 @@ void compress(){
     */
     ofstream out_file;
     ifstream in_file;
-    in_file.open("input_string.txt",ios::in);
-    out_file.open("output.bin",ios::binary|ios::out);
+    in_file.open("input_text.txt",ios::in);
+    out_file.open("compressed.bin",ios::binary|ios::out);
     string in ="",s="";
      //the first byte saves the size of the vector
     //in+=(char)coding.size();
@@ -247,28 +248,8 @@ void compress(){
     out_file.write(in.c_str(),in.size());
     in_file.close();
     out_file.close();
-    cout<<"Compression successful"<<endl;
-    /*
-    int Bit_Counter = 0;
-	uint8_t Packed_Byte = 0;
-    
-	for(int i = 0; i < encoded_data.size(); ++i){
-		if(encoded_data[i] == 1){
-			Packed_Byte |= 1;
-		}
-		if(i < encoded_data.size()-1){
-			Packed_Byte <<= 1;
-		}
-		++Bit_Counter;
-		if(Bit_Counter == 8){
-			write << Packed_Byte;
-			Bit_Counter = 0;
-            Packed_Byte = 0;
-		}
-	}
-    write << Packed_Byte;
-    write.close();
-    */
+    cout<<"Compression successful"<<endl<<"Compressed file is saved as compressed.bin"<<endl;
+
 }
 char search(vector<_code*> &coding,string binary){
     auto i=coding.begin();
@@ -284,7 +265,7 @@ char search(vector<_code*> &coding,string binary){
 void decode(){
     //class _code{ char character; string code }
     ifstream in_file;
-    in_file.open("output.bin",ios::in|ios::binary);
+    in_file.open("compressed.bin",ios::in|ios::binary);
     unsigned char size;
     in_file.read(reinterpret_cast<char*>(&size),1);
 
@@ -311,7 +292,7 @@ void decode(){
         decode.push_back(new _code(a_code,h_code_s));
     }
     in_file.close();
-    in_file.open("output.bin",ios::in|ios::binary);
+    in_file.open("compressed.bin",ios::in|ios::binary);
     fstream out_file;
     out_file.open("decoded_text.txt",ios::out);
     //unsigned char size;
@@ -370,65 +351,24 @@ void decode(){
     out_file<<to_write;
     in_file.close();
     out_file.close();
-    cout<<"Decompression successful"<<endl;
+    cout<<"Decompression successful"<<endl<<"File saved as decoded_text.txt";
 
-    /*
-    char c;
-    string str="",line;
-    int size;
-
-    ifstream read;
-    read.open("output.txt");
-    while(read){
-        getline(read,line);
-        //cout<<line<<endl;
-        if(line=="#"){
-            break;
-        }
-        str="";
-        charac=line[0];
-        size=line.size();
-        for(int i=2;i<size;i++){
-            str+=line[i];
-        }
-        decode.push_back(new _code(charac,str));   
-    }
-    string binary;
-
-    ofstream write;
-    write.open("decoded.txt");
-    while(read){
-        read>>binary;
-        //cout<<letter<<" ";
-        write<<search(decode,binary);
-    }
-    read.close();
-    write.close();
-    */
-    /*
-    for(auto i=decode.begin();i!=decode.end();i++){
-        cout<<(*i)->character<<" "<<(*i)->code<<endl;
-    }
-    */
 }
 
 int main(){
     int choice=0;
-    while(choice!=-1){
-        cout<<"1 to compress"<<endl<<"2 to decode"<<endl<<"-1 to exit"<<endl;;
-        cin>>choice;
-        switch(choice){
-            case 1:
-            compress();
-            break;
-            case 2:
-            decode();
-            break;
-            case -1:
-            break;
-            default:
-            cout<<"Enter a choice"<<endl;
-        }
+    cout<<"1 to compress"<<endl<<"2 to decode"<<endl<<"-1 to exit"<<endl;;
+    cin>>choice;
+    switch(choice){
+        case 1:
+        compress();
+        break;
+        case 2:
+        decode();
+        break;
+        default:
+        cout<<"Enter a choice"<<endl;
     }
+    
     return 0;
 }

@@ -1,1 +1,0 @@
-Creating a text compressor using Huffman encoding technique.
