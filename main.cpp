@@ -151,11 +151,11 @@ void compress(){
     //vector to store characters along with their coding
     vector<_code*> coding;
     huffmantree(coding,a,a.size()); 
-    
+    /*
     for(auto i=coding.begin();i!=coding.end();i++){
         cout<<(*i)->character<<"writing"<<(*i)->code<<endl;
         }
-    
+    */
     //auto i=coding.begin();
     
     /*
@@ -242,11 +242,12 @@ void compress(){
     }
     in+=(char)binary_to_decimal(s);
     in+=(char)count;
-    cout<<in<<endl;
-    cout<<in.size()<<endl;
+    //cout<<in<<endl;
+    //cout<<in.size()<<endl;
     out_file.write(in.c_str(),in.size());
     in_file.close();
     out_file.close();
+    cout<<"Compression successful"<<endl;
     /*
     int Bit_Counter = 0;
 	uint8_t Packed_Byte = 0;
@@ -306,7 +307,7 @@ void decode(){
             j++;
         }
         h_code_s=h_code_s.substr(j+1);
-        cout<<a_code<<"reading"<<h_code_s<<endl;
+        //cout<<a_code<<"reading"<<h_code_s<<endl;
         decode.push_back(new _code(a_code,h_code_s));
     }
     in_file.close();
@@ -340,9 +341,36 @@ void decode(){
         }
         complete=complete+path;
     }
-    cout<<complete<<endl;
+    //cout<<complete<<endl;
+    string temp="",to_write="";
+    while(complete.size()>0){
+        temp+=complete[0];
+        if(complete.size()==1){
+            complete="";
+        }
+        else{
+            complete=complete.substr(1);
+        }
+        int flag=0;
+        auto i=decode.begin();
+        while(i!=decode.end()){
+            if(temp==(*i)->code){
+                flag=1;
+                break;
+            }
+            i++;
+        }
+        if(flag==1){
+            to_write+=(*i)->character;
+            temp="";
+        }
+        
+    }
+    //cout<<to_write<<endl;
+    out_file<<to_write;
     in_file.close();
     out_file.close();
+    cout<<"Decompression successful"<<endl;
 
     /*
     char c;
@@ -394,7 +422,6 @@ int main(){
             compress();
             break;
             case 2:
-            //cout<<"test1"<<endl;
             decode();
             break;
             case -1:
