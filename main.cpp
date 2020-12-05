@@ -62,6 +62,12 @@ class _node{
         this->left=NULL;
         this->right=NULL;
     }
+    _node(int freq){
+        //this->data=data;
+        this->freq=freq;
+        this->left=NULL;
+        this->right=NULL;
+    }
 };
 
 struct compare{
@@ -74,7 +80,7 @@ void printtree(_node* root,string code,vector<_code*> &coding){
     if(root==NULL){
         return;
     }
-    if(root->data!='#'){
+    if(root->left==NULL && root->right==NULL){
         //cout<<root->data<<" : "<< code <<endl;
         coding.push_back(new _code(root->data,code));
     }
@@ -94,7 +100,7 @@ void huffmantree(vector<_code*> &coding,vector<_singlechar*> &a,int size){
         q.pop();
         right=q.top();
         q.pop();
-        top=new _node('#',left->freq+right->freq);
+        top=new _node(left->freq+right->freq);
         top->left=left;
         top->right=right;
         q.push(top);
@@ -155,49 +161,8 @@ void compress(){
     /*
     for(auto i=coding.begin();i!=coding.end();i++){
         cout<<(*i)->character<<"writing"<<(*i)->code<<endl;
-        }
-    */
-    //auto i=coding.begin();
-    
-    /*
-    while(i!=coding.end()){
-        write<<(*i)->character<<" "<<(*i)->code<<endl;
-        i++;
-    }
-    write<<'#'<<endl;
-    */
-    //int j=0;
-    //ifstream read;
-    /*
-    vector<bool> encoded_data;
-    cout<<encoded_data.max_size()<<endl;
-    read.open("input_string.txt");
-    int count1=0,count2=0;
-    while(read.get(c)){
-        auto i=coding.begin();
-        while(i!=coding.end()){
-            if(c==(*i)->character){
-                string temp = (*i)->code;
-                int size = temp.size();
-                int j=0;
-                while(j<size){
-                    if(temp[j]=='0'){
-                        encoded_data.push_back(0);
-                    }
-                    else{
-                        encoded_data.push_back(1);
-                    }
-                    j++;
-                }
-                break;
-            }
-            i++;
-            count1++;
-        }
-    }
-    cout<<encoded_data.size()<<endl;
-    read.close();
-    */
+     }
+     */
     ofstream out_file;
     ifstream in_file;
     in_file.open("input_text.txt",ios::in);
