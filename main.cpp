@@ -68,6 +68,10 @@ class _node{
         this->left=NULL;
         this->right=NULL;
     }
+    _node(){
+        this->left=NULL;
+        this->right=NULL;
+    }
 };
 
 struct compare{
@@ -256,6 +260,67 @@ void decode(){
         //cout<<a_code<<"reading"<<h_code_s<<endl;
         decode.push_back(new _code(a_code,h_code_s));
     }
+            /*
+        class _node{
+            public:
+            char data;
+            int freq;
+            _node* left;
+            _node* right;
+            _node(char data,int freq){
+                this->data=data;
+                this->freq=freq;
+                this->left=NULL;
+                this->right=NULL;
+            }
+            _node(int freq){
+                //this->data=data;
+                this->freq=freq;
+                this->left=NULL;
+                this->right=NULL;
+            }
+            _node(){
+                this->left==NULL;
+                this->right==NULL;
+            }
+        };
+        */
+    //create a new huffman tree for decoding
+    _node * root=new _node();
+    _node * current;
+    auto i=decode.begin();
+    while(i!=decode.end()){
+        current=root;
+        char charac=(*i)->character;
+        string code=(*i)->code;
+        while(code.size()!=0){
+            if(code[0]=='0'){
+                if(!current->left){
+                    current->left=new _node();
+                    current=current->left;
+                    code=code.substr(1);
+                }
+                else{
+                    current=current->left;
+                    code=code.substr(1);
+                }
+            }
+            else{
+                 if(!current->right){
+                    current->right=new _node();
+                    current=current->right;
+                    code=code.substr(1);
+                }
+                else{
+                    current=current->right;
+                    code=code.substr(1);
+                }
+            }
+        }
+        current->data=charac;
+        i++;
+    }
+
     in_file.close();
     in_file.open("compressed.bin",ios::in|ios::binary);
     fstream out_file;
@@ -288,7 +353,23 @@ void decode(){
         complete=complete+path;
     }
     //cout<<complete<<endl;
-    string temp="",to_write="";
+    string to_write="";
+    current=root;
+    while(complete.size()>0){  
+        if(complete[0]=='0'){
+            current=current->left;
+            complete=complete.substr(1);
+        }
+        else{
+            current=current->right;
+            complete=complete.substr(1);
+        }
+        if(current->left==NULL && current->right==NULL){
+            to_write+=current->data;
+            current=root;
+        }
+    }
+    /*
     while(complete.size()>0){
         temp+=complete[0];
         if(complete.size()==1){
@@ -312,6 +393,7 @@ void decode(){
         }
         
     }
+    */
     //cout<<to_write<<endl;
     out_file<<to_write;
     in_file.close();
